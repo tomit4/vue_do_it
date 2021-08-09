@@ -15,12 +15,6 @@ const pool = mariadb.createPool({
     database: process.env.DB_NAME, // the name of our database
     connectionLimit: 5 // limits the amount of connections to be made to MariaDB at one time, in this case, 5
 
-    // host: 'localhost',
-    // user: 'kenny',
-    // password: 'southpark',
-    // database: 'tasks',
-    // connectionLimit: 5
-
 });
 
 // this is more or less error handling, but if no errors are encountered, we simply "release" the connection,
