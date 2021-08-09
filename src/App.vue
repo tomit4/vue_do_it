@@ -3,6 +3,7 @@
   <img alt="Vue logo" src="./assets/mockup_nobg.svg">
   <div class="nav_bar">
   </div>
+  <Clock id="clock"/>
     <div v-if="this.$store.state.listIsShown">
     <router-link @click="clearMyList" id ="my_list_btn" to="/my_list">MY LIST</router-link>
     </div>
@@ -13,9 +14,13 @@
 
 <script>
 import { mapState, mapMutations } from 'vuex'
+import Clock from '../src/components/Clock.vue'
 
 export default {
   name: 'App',
+  components: {
+    Clock
+  },
   computed: {
       ...mapState(["tasks"]),
   },
