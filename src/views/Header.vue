@@ -1,49 +1,36 @@
 <template>
   <div>
-    <form @submit="onSubmit">
+    <form v-if="!editButtonClicked" @submit="onSubmit">
       <input id="initial_form" type="text" v-model="newTask" placeholder="THERE IS NO TRY..." maxlength="28">
+    </form>
+    <div v-if="editButtonClicked">
+    <form @submit="updateTask"><input id="edit_forms" name ="edit_input" type="text" v-model="updatedTask" placeholder="EDIT HERE..." maxlength="28"></form>
+    </div>
+    
     <form>
-    <label for="hours" class="titles" id="times_title">AT</label>
-      <select name="hours" class="select" v-model="selectedHour">
-        <option value="01">01</option>
-        <option value="02">02</option>
-        <option value="03">03</option>
-        <option value="04">04</option>
-        <option value="05">05</option>
-        <option value="06">06</option>
-        <option value="07">07</option>
-        <option value="08">08</option>
-        <option value="09">09</option>
-        <option value="10">10</option>
-        <option value="11">11</option>
-        <option value="12">12</option>
-      </select>
+      <label for="hours"></label>
+      <input class="time_select" id="hours_select" type="number" min="1" max="12" v-model="selectedHour" placeholder="00" v-on:keydown="onlyArrows">
     </form>
     <form>
-      <label for="minutes" id="times_title">:</label>
-      <input id="minutes_select" type="text" v-model="selectedMinutes" placeholder="00" maxlength="2">
+      <label for="minutes" id="hours_colon">:</label>
+      <input class="time_select" id="minutes_select" type="number" min="0" max="59" v-model="selectedMinutes" placeholder="00" v-on:keydown="onlyArrows">
     </form>
     <form>
-      <label for="am_pm" id="times_title">:</label>
-      <select name="am_pm" class="select" id="am_pm_form">
+      <select name="am_pm" class="select" id="am_pm_form" v-model="selectedAMPM">
         <option value="AM">AM</option>
         <option value="PM">PM</option>
       </select>
     </form>
-    </form>
-    <input @click="onSubmit" type="submit" value="SUBMIT">
+
+    <button v-if="editButtonClicked" @click="updateTask" class="edit_btn">EDIT</button>
+    <input v-if="!editButtonClicked" @click="onSubmit" type="submit" value="SUBMIT">
     <br>
-    <div v-if="editButtonClicked">
-      <!-- Here we will have to update the stylings and add the select dropdown forms from above so the user can adjust the time as well -->
-    <form @submit="updateTask"><input id="edit_forms" name ="edit_input" type="text" v-model="updatedTask" placeholder="EDIT HERE..." maxlength="28"></form>
-    <button @click="updateTask" class="edit_btn">EDIT</button>
-    </div>
     
     <ul>  
       <li class="tooltip" v-for="(tasks, id) in tasks" :key="tasks" :id="id" >
       <div>
         <span :id="'li_'+id">
-          {{ tasks.todo }}
+          {{ tasks.todo + " AT " + tasks.hours + ":" + tasks.minutes + tasks.am_pm  }}
         </span>
       <span @click="editTask(id, tasks)" class="tooltiptext" :id="'edit_btn'+id">
         <span>EDIT</span>
@@ -67,6 +54,7 @@ export default {
       "newTask": undefined,
       "selectedHour": undefined,
       "selectedMinutes": undefined,
+      "selectedAMPM": undefined,
       "updatedTask": undefined,
       "editButtonClicked": false,
       "todoTask": [],
@@ -77,20 +65,88 @@ export default {
     ...mapMutations(["showTodos", "addTodo", "removeTodo", "updateTodo", "showMyListLink"]),
     onSubmit(e) {
       e.preventDefault()
-      if(this.newTask === undefined) {
+// Consider switch/case statements instead of so many if statements...
+      if (this.newTask === undefined) {
+        alert("PLEASE ENTER A TASK")
+        this.newTask = undefined
+        this.selectedHour = undefined
+        this.selectedMinutes = undefined
+        this.selectedAMPM = undefined
         return
       }
+      if (this.selectedHour === undefined || this.selectedHour === "0") {
+        this.selectedHour = "12"
+      }
+      if (this.selectedMinutes === undefined || this.selectedMinutes === "0") {
+        this.selectedMinutes = "00"
+      }
+      if (this.selectedAMPM === undefined) {
+        this.selectedAMPM = "AM"
+      }
+      if (this.selectedHour.length < 2 || this.selectedHour === "0") {
+        this.selectedHour = "0" + this.selectedHour
+      }
+      if (this.selectedMinutes.length < 2 || this.selectedHour === "0") {
+        this.selectedMinutes = "0" + this.selectedMinutes
+      }
+      if (Number(this.selectedHour) > 12 || Number(this.selectedMinutes) > 59){
+        alert("PLEASE ENTER VALID HOURS/MINUTES")
+        this.newTask = undefined
+        this.selectedHour = undefined
+        this.selectedMinutes = undefined
+        this.selectedAMPM = undefined
+        return
+      }
+      if (this.selectedHour.length > 2 || this.selectedMinutes.length > 2) {
+        alert("PLEASE ENTER UP TO ONLY TWO DIGITS FOR TIME INPUT")
+        this.newTask = undefined
+        this.selectedHour = undefined
+        this.selectedMinutes = undefined
+        this.selectedAMPM = undefined
+        return
+      }
+
       let newTodo = {
         todo: this.newTask.toUpperCase(),
+        hours: this.selectedHour,
+        minutes: this.selectedMinutes,
+        am_pm: this.selectedAMPM,
         nanoid: nanoid(21)
       }
+
       this.postTodo(newTodo)
       this.newTask = undefined
+      this.selectedHour = undefined
+      this.selectedMinutes = undefined
+      this.selectedAMPM = undefined
     },
     onClick(id, tasks) {
       let clickedLi = document.getElementById(id)
       clickedLi.remove();
       this.deleteTodo(tasks)
+    },
+    // Only allow Numbers, Arrows, BackSpace, and Delete buttons on Time input
+    // Strnage behavior when trying to rename onlyArrows to onlyNums or something like that, it forgets everything...
+    onlyArrows(e){
+      // console.log(e.keyCode)
+      if (e.keyCode !== 8
+          && e.keyCode !== 37
+          && e.keyCode !== 38
+          && e.keyCode !== 39
+          && e.keyCode !== 40
+          && e.keyCode !== 46
+          && e.keyCode !== 48
+          && e.keyCode !== 49
+          && e.keyCode !== 50
+          && e.keyCode !== 51
+          && e.keyCode !== 52
+          && e.keyCode !== 53
+          && e.keyCode !== 54
+          && e.keyCode !== 55
+          && e.keyCode !== 56
+          && e.keyCode !== 57) {
+         e.preventDefault()
+      }
     },
 
     // Note that our edit functionality is probably not how it was intended to be used considering everything else is done using mutations and actions within the vuex store... we probably did this in a more round about way than necessary and it would be good to look into how this could be done more cleanly in future projects...
@@ -127,6 +183,7 @@ export default {
   },
   created() { // this is what invokes fetchTodos()
     this.fetchTodos()
+    // console.log(this.$store.state.tasks)
   }
 }
 </script>
@@ -141,6 +198,7 @@ form {
   padding: 0 0 -20px 0;
 }
 
+
 #initial_form[type="text"] {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 140%;
@@ -149,8 +207,8 @@ form {
   display: block;
   align-content: center;
   justify-content: center;
-  margin: 0 0px 0 -100px;
-  padding: 5px 240px 5px 240px;
+  margin: -7px 0 5px 0;
+  padding: 6px 500px 6px 500px;
   border: 3.5px solid #41b883;
   border-radius: 0.4em;
   outline: 0;
@@ -165,7 +223,7 @@ input[type="submit"] {
   display: inline-block;
   align-content: center;
   justify-content: center;
-  margin: 0.75em 0 0.25em 0;
+  margin: 0.3em 0 0.25em 0;
   background: #41b883;
   color: #fff;
   border: 3px #41b883 solid;
@@ -190,42 +248,24 @@ input[type="submit"]:hover {
 
 /* Time Forms */
 
-#times_title {
-  display: block;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 115%;
-  font-weight: 900;
-  text-decoration:none;
-  height:51px; 
-  display:block;
-  align-content: center;
-  justify-content: center;
-  margin: 18px 0px -25px 5px;
-  background: none;
-  border: none;
-  color: #41b883;
+/*These hide the arrow from number input fields */
+
+input[type=number] {
+  -moz-appearance: textfield;
 }
 
-.select {
-  display: block;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 95%;
-  font-weight: 900;
-  width:60px;
-  height:40px;
-  display:block;
-  align-content: center;
-  justify-content: center;
-  margin: 0.7rem 0 0 0.5rem;
-  padding: 1px;
-  background: #41b883;
-  border: #41b883 solid;
-  border-radius: 0.4em;
-  color: #fff;
-  cursor: pointer;
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
-#minutes_select {
+/* Hides the arrow on the dropdown menu */
+/* select {
+  -webkit-appearance:none
+} */
+
+#hours_select {
   display: block;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 95%;
@@ -235,24 +275,97 @@ input[type="submit"]:hover {
   display:block;
   align-content: center;
   justify-content: center;
-  margin: 0.7rem 0 0 0.7rem;
+  margin: 1rem 0 0 -10rem;
   padding: 1px;
   background: #41b883;
   border: #41b883 solid;
-  border-radius: 0.4em;
+  border-radius: 5px;
   color: #fff;
   cursor:pointer;
 }
 
+#hours_select:hover {
+  background: #206557ff;
+  border: #206557ff solid;
+}
+
+#hours_select[placeholder] {
+  text-align: center;
+}
+
+#hours_colon {
+  display: block;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 115%;
+  font-weight: 900;
+  text-decoration:none;
+  height:51px; 
+  align-content: center;
+  justify-content: center;
+  margin: -25px 15px 0px -10px;
+  padding: 0 -2px 0 12px;
+  background: none;
+  border: none;
+  color: #41b883;
+}
+
+#minutes_select {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 95%;
+  font-weight: 900;
+  width:50px;
+  height:32px;
+  display:flex;
+  align-content: center;
+  justify-content: center;
+  margin: -1.82rem 0rem 0 -0.45rem;
+  padding: 1px;
+  background: #41b883;
+  border: #41b883 solid;
+  border-radius: 5px;
+  color: #fff;
+  cursor:pointer;
+}
+
+#minutes_select:hover {
+  background: #206557ff;
+  border: #206557ff solid;
+}
+
+#minutes_select[placeholder] {
+  text-align: center;
+}
+
 #am_pm_form {
-  width: 60px;
+  display: block;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 95%;
+  font-weight: 900;
+  width:60px;
+  height:40px;
+  display:block;
+  align-content: center;
+  justify-content: center;
+  text-align:left;
+  margin: -2.85rem 0 0 10rem;
+  padding: 0px;
+  background: #41b883;
+  border: #41b883 solid;
+  border-radius: 5px;
+  color: #fff;
+  cursor: pointer;
+}
+
+#am_pm_form:hover {
+  background: #206557ff;
+  border: #206557ff solid;
 }
 
 ul {
   display:inline-block;
   justify-content:center;
   align-content:center;
-  text-align: center;
+  text-align: left;
   text-indent: -0.4em;
   list-style-type: none; /*Remove bullets*/
   padding: 0; /* Remove padding */
@@ -271,7 +384,7 @@ li {
   background-color:#41b883;
   border-radius: 0.4em;
   margin: 10px;
-  padding: 12px 80px 12px 80px;
+  padding: 12px 180px 12px 80px;
   cursor: pointer;
 }
 
@@ -288,7 +401,7 @@ li:hover {
     display:block;
     align-content: center;
     justify-content: center;
-    margin: -41px 0px 0px 875px;
+    margin: -41px 0px 0px 965px;
     background: #41b883;
     border: #41b883 solid;
     border-radius: 0.4em;
@@ -311,11 +424,15 @@ li:hover {
   display: block;
   align-content: center;
   justify-content: center;
-  margin-top: 1rem;
-  padding: 3px 150px 3px 150px;
+  margin-top: -8px;
+  padding: 7px 462px 7px 462px;
   border: 3.5px solid #41b883;
   border-radius: 0.4em;
   outline: 0;
+}
+
+#edit_forms[placeholder] {
+  font-size: 115%;
 }
 
 .edit_btn {
