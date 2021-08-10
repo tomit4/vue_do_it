@@ -1,7 +1,8 @@
 ![screen-gif](./public/vue_do_it.gif)
 
+<h1>APP OUT OF COMMISSION AT THIS TIME, PLEASE STAND BY</h1>
 <header>
-<h4 style=color:#206557ff>My First Vue Application<h4>
+<h4 style=color:#206557ff>My First Vue Application</h4>
 </header>
 <body>
 
@@ -10,7 +11,7 @@
 <p style=color:#206557ff>In order to utilize the application as it is now, you will need to install a few simple tools and have an instance of MariaDB installed.  The following instructions are specific to the development environment that was used to create this project.  Although you can find plenty of documentation on how to install the specific tools you'll need to use this app on any machine, the following notes/instructions will be specific to Manjaro Linux, as that is the environment I use.  Thusly any Arch based distribution can follow along easily, but any tech-savy person with a knowledge of Git, Node, and MySQL should be able to get this running on any machine.</p>
 
 <header>
-<h4 style=color:#206557ff>Install NodeJS<h4>
+<h4 style=color:#206557ff>Install NodeJS</h4>
 </header>
 
 <p style=color:#206557ff>You'll first need NodeJS and it's package manager, NPM:</p>
@@ -76,7 +77,7 @@ Installing MariaDB has multiple steps and is not as simple as inputting a single
 
 <p style=color:#206557ff>You'll also need to import the database.  I've provided a vue_do_it.sql file that can be imported like this, just make sure you created the database using the instructions above.  From the vue_do_it directory, simply type into the terminal:</p>
 
-`mariadb -u username -p vue_do_it < vue_do_it.sql`
+`mariadb -u username -p vue_do_it < vue_do_it_timed.sql`
 
 <h5 style=color:#206557ff>Create a .env-local file:</h5>
 
