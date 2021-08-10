@@ -27,9 +27,12 @@ const init = async() => {
         method: 'POST',
         path: '/maria_database',
         handler: async(request) => {
-            const { task, nanoid } = request.payload
-            const sqlQuery = 'INSERT INTO to_do (task, nanoid) VALUES(?, ?)'
-            const result = await pool.query(sqlQuery, [task, nanoid])
+            // const { task, nanoid } = request.payload
+            // const sqlQuery = 'INSERT INTO to_do (task, nanoid) VALUES(?, ?)'
+            // const result = await pool.query(sqlQuery, [task, nanoid])
+            const { task, hours, minutes, am_pm, nanoid } = request.payload
+            const sqlQuery = 'INSERT INTO to_do (task, hours, minutes, am_pm, nanoid) VALUES (?, ?, ?, ?, ?)'
+            const result = await pool.query(sqlQuery, [task, hours, minutes, am_pm, nanoid])
             return result
         }         
     })

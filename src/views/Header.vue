@@ -2,16 +2,44 @@
   <div>
     <form @submit="onSubmit">
       <input id="initial_form" type="text" v-model="newTask" placeholder="THERE IS NO TRY..." maxlength="28">
+    <form>
+    <label for="hours" class="titles" id="times_title">AT</label>
+      <select name="hours" class="select" v-model="selectedHour">
+        <option value="01">01</option>
+        <option value="02">02</option>
+        <option value="03">03</option>
+        <option value="04">04</option>
+        <option value="05">05</option>
+        <option value="06">06</option>
+        <option value="07">07</option>
+        <option value="08">08</option>
+        <option value="09">09</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+      </select>
+    </form>
+    <form>
+      <label for="minutes" id="times_title">:</label>
+      <input id="minutes_select" type="text" v-model="selectedMinutes" placeholder="00" maxlength="2">
+    </form>
+    <form>
+      <label for="am_pm" id="times_title">:</label>
+      <select name="am_pm" class="select" id="am_pm_form">
+        <option value="AM">AM</option>
+        <option value="PM">PM</option>
+      </select>
+    </form>
     </form>
     <input @click="onSubmit" type="submit" value="SUBMIT">
     <br>
     <div v-if="editButtonClicked">
+      <!-- Here we will have to update the stylings and add the select dropdown forms from above so the user can adjust the time as well -->
     <form @submit="updateTask"><input id="edit_forms" name ="edit_input" type="text" v-model="updatedTask" placeholder="EDIT HERE..." maxlength="28"></form>
     <button @click="updateTask" class="edit_btn">EDIT</button>
     </div>
     
-    <ul>
-      
+    <ul>  
       <li class="tooltip" v-for="(tasks, id) in tasks" :key="tasks" :id="id" >
       <div>
         <span :id="'li_'+id">
@@ -23,8 +51,8 @@
       </div>
       <button @click="onClick(id, tasks)" class="btn" :id="'btn_' +id">DONE</button>
       </li>
-
     </ul>
+
     <router-link @click="reRenderMyListLink" id="my_list_btn" to="/">HOME</router-link>
   </div>
 </template>
@@ -37,6 +65,8 @@ export default {
   data() {
     return {
       "newTask": undefined,
+      "selectedHour": undefined,
+      "selectedMinutes": undefined,
       "updatedTask": undefined,
       "editButtonClicked": false,
       "todoTask": [],
@@ -107,7 +137,8 @@ form {
   display: flex;
   align-content: center;
   justify-content: center;
-  padding: 10px 0 0 0;
+  margin: -10px 0 0 0;
+  padding: 0 0 -20px 0;
 }
 
 #initial_form[type="text"] {
@@ -118,10 +149,12 @@ form {
   display: block;
   align-content: center;
   justify-content: center;
-  padding: 5px 300px 5px 300px;
+  margin: 0 0px 0 -100px;
+  padding: 5px 240px 5px 240px;
   border: 3.5px solid #41b883;
   border-radius: 0.4em;
   outline: 0;
+  cursor: default;
 }
 
 input[type="submit"] {
@@ -133,7 +166,6 @@ input[type="submit"] {
   align-content: center;
   justify-content: center;
   margin: 0.75em 0 0.25em 0;
-
   background: #41b883;
   color: #fff;
   border: 3px #41b883 solid;
@@ -148,11 +180,74 @@ input[type="submit"]:hover {
 
 #initial_form[placeholder] {
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 140%;
+  height: 28px;
+  width: 200px;
+  font-size: 115%;
   font-weight: 900;
   color:#41b883;
   text-align: center;
 }
+
+/* Time Forms */
+
+#times_title {
+  display: block;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 115%;
+  font-weight: 900;
+  text-decoration:none;
+  height:51px; 
+  display:block;
+  align-content: center;
+  justify-content: center;
+  margin: 18px 0px -25px 5px;
+  background: none;
+  border: none;
+  color: #41b883;
+}
+
+.select {
+  display: block;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 95%;
+  font-weight: 900;
+  width:60px;
+  height:40px;
+  display:block;
+  align-content: center;
+  justify-content: center;
+  margin: 0.7rem 0 0 0.5rem;
+  padding: 1px;
+  background: #41b883;
+  border: #41b883 solid;
+  border-radius: 0.4em;
+  color: #fff;
+  cursor: pointer;
+}
+
+#minutes_select {
+  display: block;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 95%;
+  font-weight: 900;
+  width:50px;
+  height:32px;
+  display:block;
+  align-content: center;
+  justify-content: center;
+  margin: 0.7rem 0 0 0.7rem;
+  padding: 1px;
+  background: #41b883;
+  border: #41b883 solid;
+  border-radius: 0.4em;
+  color: #fff;
+  cursor:pointer;
+}
+
+#am_pm_form {
+  width: 60px;
+}
+
 ul {
   display:inline-block;
   justify-content:center;
@@ -161,7 +256,7 @@ ul {
   text-indent: -0.4em;
   list-style-type: none; /*Remove bullets*/
   padding: 0; /* Remove padding */
-  margin: 0 625px 0 50px;
+  margin: -7px 625px 0 50px;
 }
 
 li {
@@ -216,7 +311,7 @@ li:hover {
   display: block;
   align-content: center;
   justify-content: center;
-  margin-top: 0.5rem;
+  margin-top: 1rem;
   padding: 3px 150px 3px 150px;
   border: 3.5px solid #41b883;
   border-radius: 0.4em;
@@ -232,7 +327,7 @@ li:hover {
     display: inline-block;
     align-content: center;
     justify-content: center;
-    margin: 1rem;
+    margin: 0.5rem;
     background: #41b883;
     border: #41b883 solid;
     border-radius: 0.4em;

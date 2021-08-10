@@ -1,4 +1,6 @@
 <template>
+  <div class="nav_bar">
+  </div>
   <div class="container">
   <img alt="Vue logo" src="./assets/mockup_nobg.svg">
   <div class="nav_bar">
@@ -52,7 +54,7 @@ export default {
   justify-content: center;
   align-content: center;
   margin: 0 5em 0 5em;
-  padding: 0.5em;
+  padding: 0.4em;
   border-radius: 0.2em;
 }
 
