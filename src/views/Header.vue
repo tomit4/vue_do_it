@@ -152,6 +152,7 @@ export default {
     // Note that our edit functionality is probably not how it was intended to be used considering everything else is done using mutations and actions within the vuex store... we probably did this in a more round about way than necessary and it would be good to look into how this could be done more cleanly in future projects...
     editTask(id, tasks) {
       id
+      // console.log(id, tasks)
       this.editButtonClicked = true;
       
       this.todoTask.push(tasks) // temporarily holds the todo in an array to be compared to our state object's task array
@@ -163,16 +164,50 @@ export default {
         return
       }
       this.updatedTask = this.updatedTask.toUpperCase()
+
       for (let i = 0; i < this.$store.state.tasks.length; i++) {
-        if (this.todoTask[0].todo === this.$store.state.tasks[i].todo && this.todoTask[0].nanoid === this.$store.state.tasks[i].nanoid)
-        this.$store.state.tasks[i].todo = this.updatedTask
+        if (this.todoTask[0].todo === this.$store.state.tasks[i].todo &&
+            this.todoTask[0].nanoid === this.$store.state.tasks[i].nanoid) {
+        
+        this.$store.state.tasks[i].todo = this.updatedTask 
+
+        if (this.selectedHour === undefined) {
+          break
+        }
+        else if (this.selectedHour !== undefined) {
+          if (this.selectedHour.length < 2) {
+            this.selectedHour = "0" + this.selectedHour
+          }
+          this.$store.state.tasks[i].hours = this.selectedHour
+        }
+        if (this.selectedMinutes === undefined) {
+          break
+        }
+        else if (this.selectedMinutes !== undefined) {
+          if (this.selectedMinutes.length < 2) {
+            this.selectedMinutes = "0" + this.selectedMinutes
+          }
+          this.$store.state.tasks[i].minutes = this.selectedMinutes
+        }
+        if (this.selectedAMPM === undefined) {
+          break
+        }
+        else if (this.selectedAMPM !== undefined) {
+          this.$store.state.tasks[i].am_pm = this.selectedAMPM
+        }
+        
+        }
       }
-      console.log(this.todoTask)
       this.editTodo(this.todoTask)
 
       this.todoTask = [];
       this.updatedTask = undefined
       this.editButtonClicked = false;
+
+      this.newTask = undefined
+      this.selectedHour = undefined
+      this.selectedMinutes = undefined
+      this.selectedAMPM = undefined
     },
     reRenderMyListLink() {
       this.showMyListLink()
@@ -197,7 +232,6 @@ form {
   margin: -10px 0 0 0;
   padding: 0 0 -20px 0;
 }
-
 
 #initial_form[type="text"] {
   font-family: Arial, Helvetica, sans-serif;

@@ -13,20 +13,24 @@ const store = createStore({
 
         showTodos(state, payload) {
             for (let i = 0; i < payload.length; i++) {
-                // console.log(payload[i].nanoid)
                 let taskObj = {}
                 taskObj.id = i
-                taskObj.nanoid = payload[i].nanoid
                 taskObj.todo = payload[i].task
+                taskObj.hours = payload[i].hours
+                taskObj.minutes = payload[i].minutes
+                taskObj.am_pm = payload[i].am_pm
+                taskObj.nanoid = payload[i].nanoid
                 state.tasks.push(taskObj)
             }
-            // console.log(state.tasks)
             return state // now the state is reset to the returned data from fetchToDos
         },
         addTodo(state, payload) {
             let taskObj = {}
             taskObj.id = state.tasks.length
             taskObj.nanoid = payload.nanoid
+            taskObj.hours = payload.hours
+            taskObj.minutes = payload.minutes
+            taskObj.am_pm = payload.am_pm
             taskObj.todo = payload.todo
             state.tasks.push(taskObj)
         },
@@ -42,7 +46,6 @@ const store = createStore({
 
         showMyListLink(state) {
             state.listIsShown = !state.listIsShown
-            // console.log(state.listIsShown)
         }
 
     },
@@ -59,7 +62,14 @@ const store = createStore({
 
         async postTodo(context, payload) {
             try {
-                const response = await axios.post('http://localhost:3000/maria_database', {"task": payload.todo, "nanoid": payload.nanoid})
+                const response = await axios.post('http://localhost:3000/maria_database', 
+                {
+                    "task": payload.todo,
+                    "hours": payload.hours,
+                    "minutes": payload.minutes,
+                    "am_pm": payload.am_pm,
+                    "nanoid": payload.nanoid
+                })
                 response
                 context.commit('addTodo', payload)
             }
@@ -78,8 +88,13 @@ const store = createStore({
         async editTodo(context, payload) {
             try{
                 context
-                console.log(payload[0])
-                const response = await axios.put('http://localhost:3000/maria_database', {"updated": payload[0].todo, "nanoid": payload[0].nanoid })
+                // console.log(payload[0])
+                const response = await axios.put('http://localhost:3000/maria_database', 
+                {"updated_todo": payload[0].todo, 
+                "hours": payload[0].hours, 
+                "minutes": payload[0].minutes, 
+                "am_pm": payload[0].am_pm, 
+                "nanoid": payload[0].nanoid })
                 response
             }
             catch(err) {console.log(err)}

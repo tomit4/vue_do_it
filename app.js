@@ -42,19 +42,20 @@ const init = async() => {
         path: '/maria_database',
         handler: async(request) => {
             const { deletedItem } = request.payload
-            const sqlQuery = 'DELETE FROM to_do WHERE (task) = (?) && nanoid = (?)'
-            const result = await pool.query(sqlQuery, [deletedItem.todo, deletedItem.nanoid])
+            const sqlQuery = 'DELETE FROM to_do WHERE nanoid = (?)'
+            const result = await pool.query(sqlQuery, [deletedItem.nanoid])
             return result
         }
     })
 
+    // We'll now need to add more sqlQuery parameters to edit hours, minutes, and ampm
     server.route({
         method: 'PUT',
         path: '/maria_database',
         handler: async(request) => {
-            const { updated, nanoid } = request.payload
-            const sqlQuery = 'UPDATE to_do SET task = (?) WHERE nanoid = (?)'
-            const result = await pool.query(sqlQuery, [ updated, nanoid ])
+            const { updated_todo, hours, minutes, am_pm, nanoid } = request.payload
+            const sqlQuery = 'UPDATE to_do SET task = (?), hours = (?), minutes = (?), am_pm = (?) WHERE nanoid = (?)'
+            const result = await pool.query(sqlQuery, [ updated_todo, hours, minutes, am_pm, nanoid ])
             return result
         }
     })

@@ -14,7 +14,9 @@ export default {
   methods: {
     showTime() {
       let time = new Date()
-      let hour = time.getHours() - 7
+      time.setHours(22)
+      let hour = time.getHours()
+      // console.log(hour)
       let min = time.getMinutes()
       let sec = time.getSeconds()
       let am_pm = "AM"
@@ -64,6 +66,7 @@ export default {
     border-radius: 5px;
     color: #fff;
     background-color: #206557ff;
+    cursor:default;
 }
 
 </style>
