@@ -27,16 +27,16 @@
     <br>
     
     <ul>  
-      <li class="tooltip" v-for="(tasks, id) in tasks" :key="tasks" :id="id" >
+      <li class="tooltip" v-for="(tasks, id) in tasks" :key="tasks" :id="tasks.currentStatus ? 'right_now' : 'not_now'">
       <div>
-        <span :id="'li_'+id">
-          {{ tasks.todo + " AT " + tasks.hours + ":" + tasks.minutes + tasks.am_pm  }}
+        <span class="li_items">
+          {{ tasks.todo + " AT " + tasks.hours + ":" + tasks.minutes + tasks.am_pm }}
         </span>
       <span @click="editTask(id, tasks)" class="tooltiptext" :id="'edit_btn'+id">
         <span>EDIT</span>
       </span>
       </div>
-      <button @click="onClick(id, tasks)" class="btn" :id="'btn_' +id">DONE</button>
+      <button @click="onClick(id, tasks)" class="btn" :id="tasks.currentStatus ? 'right_now' : 'not_now'">DONE</button>
       </li>
     </ul>
 
@@ -65,6 +65,7 @@ export default {
     ...mapMutations(["showTodos", "addTodo", "removeTodo", "updateTodo", "showMyListLink"]),
     onSubmit(e) {
       e.preventDefault()
+      // console.log(this.$store.state.currentHour, this.$store.state.currentAMPM)
 // Consider switch/case statements instead of so many if statements...
       if (this.newTask === undefined) {
         alert("PLEASE ENTER A TASK")
@@ -82,12 +83,6 @@ export default {
       }
       if (this.selectedAMPM === undefined) {
         this.selectedAMPM = "AM"
-      }
-      if (this.selectedHour.length < 2 || this.selectedHour === "0") {
-        this.selectedHour = "0" + this.selectedHour
-      }
-      if (this.selectedMinutes.length < 2 || this.selectedHour === "0") {
-        this.selectedMinutes = "0" + this.selectedMinutes
       }
       if (Number(this.selectedHour) > 12 || Number(this.selectedMinutes) > 59){
         alert("PLEASE ENTER VALID HOURS/MINUTES")
@@ -126,10 +121,11 @@ export default {
       this.deleteTodo(tasks)
     },
     // Only allow Numbers, Arrows, BackSpace, and Delete buttons on Time input
-    // Strnage behavior when trying to rename onlyArrows to onlyNums or something like that, it forgets everything...
+    // Strange behavior when trying to rename onlyArrows to onlyNums or something like that, it forgets everything...
     onlyArrows(e){
       // console.log(e.keyCode)
       if (e.keyCode !== 8
+          && e.keyCode !== 9
           && e.keyCode !== 37
           && e.keyCode !== 38
           && e.keyCode !== 39
@@ -152,7 +148,6 @@ export default {
     // Note that our edit functionality is probably not how it was intended to be used considering everything else is done using mutations and actions within the vuex store... we probably did this in a more round about way than necessary and it would be good to look into how this could be done more cleanly in future projects...
     editTask(id, tasks) {
       id
-      // console.log(id, tasks)
       this.editButtonClicked = true;
       
       this.todoTask.push(tasks) // temporarily holds the todo in an array to be compared to our state object's task array
@@ -175,18 +170,12 @@ export default {
           break
         }
         else if (this.selectedHour !== undefined) {
-          if (this.selectedHour.length < 2) {
-            this.selectedHour = "0" + this.selectedHour
-          }
           this.$store.state.tasks[i].hours = this.selectedHour
         }
         if (this.selectedMinutes === undefined) {
           break
         }
         else if (this.selectedMinutes !== undefined) {
-          if (this.selectedMinutes.length < 2) {
-            this.selectedMinutes = "0" + this.selectedMinutes
-          }
           this.$store.state.tasks[i].minutes = this.selectedMinutes
         }
         if (this.selectedAMPM === undefined) {
@@ -198,7 +187,8 @@ export default {
         
         }
       }
-      this.editTodo(this.todoTask)
+
+      this.editTodo(this.todoTask[0])
 
       this.todoTask = [];
       this.updatedTask = undefined
@@ -211,14 +201,16 @@ export default {
     },
     reRenderMyListLink() {
       this.showMyListLink()
-    }
+    },
   },
   computed: {
     ...mapState(["tasks"])
   },
   created() { // this is what invokes fetchTodos()
     this.fetchTodos()
-    // console.log(this.$store.state.tasks)
+  },
+  mounted() {
+
   }
 }
 </script>
@@ -265,7 +257,7 @@ input[type="submit"] {
   cursor: pointer;
 }
 
-input[type="submit"]:hover {
+input[type="submit"]:hover, input[type="submit"]:focus {
   background: #206557ff;
   border: 3px #206557ff solid;
 }
@@ -318,7 +310,7 @@ input::-webkit-inner-spin-button {
   cursor:pointer;
 }
 
-#hours_select:hover {
+#hours_select:hover, #hours_select:focus {
   background: #206557ff;
   border: #206557ff solid;
 }
@@ -361,7 +353,7 @@ input::-webkit-inner-spin-button {
   cursor:pointer;
 }
 
-#minutes_select:hover {
+#minutes_select:hover, #minutes_select:focus {
   background: #206557ff;
   border: #206557ff solid;
 }
@@ -390,7 +382,7 @@ input::-webkit-inner-spin-button {
   cursor: pointer;
 }
 
-#am_pm_form:hover {
+#am_pm_form:hover, #am_pm_form:focus {
   background: #206557ff;
   border: #206557ff solid;
 }
@@ -400,7 +392,7 @@ ul {
   justify-content:center;
   align-content:center;
   text-align: left;
-  text-indent: -0.4em;
+  text-indent: -3em;
   list-style-type: none; /*Remove bullets*/
   padding: 0; /* Remove padding */
   margin: -7px 625px 0 50px;
@@ -422,8 +414,13 @@ li {
   cursor: pointer;
 }
 
-li:hover {
+li:hover, li:focus {
   background-color: #206557ff;
+}
+
+#right_now {
+  background-color: #206557ff;
+  border-color: #206557ff;
 }
 
 .btn {
@@ -435,7 +432,7 @@ li:hover {
     display:block;
     align-content: center;
     justify-content: center;
-    margin: -41px 0px 0px 965px;
+    margin: -41px 0px 0px 970px;
     background: #41b883;
     border: #41b883 solid;
     border-radius: 0.4em;
@@ -443,7 +440,7 @@ li:hover {
     cursor: pointer;
 }
 
-.btn:hover {
+.btn:hover, .btn:focus {
     background: #206557ff;
     border: 9px #206557ff solid;
 }
@@ -486,7 +483,7 @@ li:hover {
     cursor: pointer;
 }
 
-.edit_btn:hover {
+.edit_btn:hover, .edit_btn:focus {
   background: #206557ff;
   border: 9px #206557ff solid;
 }
@@ -540,6 +537,5 @@ li:hover {
  border-style: solid;
  border-color: transparent #206557ff transparent transparent;
 }
-
 
 </style>
