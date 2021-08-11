@@ -27,7 +27,7 @@
     <br>
     
     <ul>  
-      <li class="tooltip" v-for="(tasks, id) in tasks" :key="tasks" :id="tasks.currentStatus ? 'right_now' : 'not_now'">
+      <li class="tooltip" v-for="(tasks, id) in tasks" :key="tasks" :id="id" :name="tasks.currentStatus ? 'right_now' : 'not_now'">
       <div>
         <span>
           {{ tasks.todo + " AT " + tasks.hours + ":" + tasks.minutes + tasks.am_pm }}
@@ -145,7 +145,6 @@ export default {
       }
     },
 
-    // Note that our edit functionality is probably not how it was intended to be used considering everything else is done using mutations and actions within the vuex store... we probably did this in a more round about way than necessary and it would be good to look into how this could be done more cleanly in future projects...
     editTask(id, tasks) {
       id
       this.editButtonClicked = true;
@@ -418,7 +417,7 @@ li:hover, li:focus {
   background-color: #206557ff;
 }
 
-#right_now {
+li[name="right_now"] {
   background-color: #206557ff;
   border-color: #206557ff;
 }
