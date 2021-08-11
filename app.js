@@ -1,6 +1,7 @@
 'use strict'
 
 const Hapi = require("@hapi/hapi")
+// const { nanoid } = require("nanoid")
 const pool = require('./maria_database_connection/database.js')
 
 const init = async() => {
@@ -13,11 +14,19 @@ const init = async() => {
         }
     })
 
+    // server.route({
+    //     method: 'GET',
+    //     path: '/',
+    //     handler: async() => {
+    //         return nanoid()
+    //     }               
+    // })
+    
     server.route({
         method: 'GET',
         path: '/maria_database',
         handler: async() => {
-            const sqlQuery = 'SELECT * FROM to_do'
+            const sqlQuery = 'SELECT * FROM to_do_am UNION ALL SELECT * FROM to_do_pm ORDER BY hours ASC'
             const result = await pool.query(sqlQuery)
             return result
         }               
@@ -27,13 +36,23 @@ const init = async() => {
         method: 'POST',
         path: '/maria_database',
         handler: async(request) => {
-            // const { task, nanoid } = request.payload
-            // const sqlQuery = 'INSERT INTO to_do (task, nanoid) VALUES(?, ?)'
-            // const result = await pool.query(sqlQuery, [task, nanoid])
-            const { task, hours, minutes, am_pm, nanoid } = request.payload
-            const sqlQuery = 'INSERT INTO to_do (task, hours, minutes, am_pm, nanoid) VALUES (?, ?, ?, ?, ?)'
-            const result = await pool.query(sqlQuery, [task, hours, minutes, am_pm, nanoid])
-            return result
+            const { task, minutes, am_pm, nanoid } = request.payload
+            let { hours } = request.payload
+            if (am_pm === "AM" && hours === "12") {
+                hours = 0
+            }
+            if (am_pm === "PM" && hours === "12") {
+                hours = 0
+            }
+            if (am_pm === "AM") {
+                const sqlQuery = 'INSERT INTO to_do_am (task, hours, minutes, am_pm, nanoid) VALUES (?, ?, ?, ?, ?)'
+                const result = await pool.query(sqlQuery, [task, Number(hours), Number(minutes), am_pm, nanoid])
+                return result
+            } else if (am_pm === "PM") {
+                const sqlQuery = 'INSERT INTO to_do_pm (task, hours, minutes, am_pm, nanoid) VALUES (?, ?, ?, ?, ?)'
+                const result = await pool.query(sqlQuery, [task, Number(hours) + 12, Number(minutes), am_pm, nanoid])
+                return result
+            }
         }         
     })
 
@@ -42,21 +61,32 @@ const init = async() => {
         path: '/maria_database',
         handler: async(request) => {
             const { deletedItem } = request.payload
-            const sqlQuery = 'DELETE FROM to_do WHERE nanoid = (?)'
-            const result = await pool.query(sqlQuery, [deletedItem.nanoid])
-            return result
+            if (deletedItem.am_pm === "AM") {
+                const sqlQuery = 'DELETE FROM to_do_am WHERE nanoid = (?)'
+                const result = await pool.query(sqlQuery, [deletedItem.nanoid])
+                return result
+            } else if (deletedItem.am_pm === "PM") {
+                const sqlQuery = 'DELETE FROM to_do_pm WHERE nanoid = (?)'
+                const result = await pool.query(sqlQuery, [deletedItem.nanoid])
+                return result
+            }
         }
     })
 
-    // We'll now need to add more sqlQuery parameters to edit hours, minutes, and ampm
     server.route({
         method: 'PUT',
         path: '/maria_database',
         handler: async(request) => {
             const { updated_todo, hours, minutes, am_pm, nanoid } = request.payload
-            const sqlQuery = 'UPDATE to_do SET task = (?), hours = (?), minutes = (?), am_pm = (?) WHERE nanoid = (?)'
-            const result = await pool.query(sqlQuery, [ updated_todo, hours, minutes, am_pm, nanoid ])
-            return result
+            if (am_pm === "AM") {
+                const sqlQuery = 'UPDATE to_do_am SET task = (?), hours = (?), minutes = (?), am_pm = (?) WHERE nanoid = (?)'
+                const result = await pool.query(sqlQuery, [ updated_todo, Number(hours), Number(minutes), am_pm, nanoid ])
+                return result
+            } else if (am_pm === "PM") {
+                const sqlQuery = 'UPDATE to_do_pm SET task = (?), hours = (?), minutes = (?), am_pm = (?) WHERE nanoid = (?)'
+                const result = await pool.query(sqlQuery, [ updated_todo, Number(hours), Number(minutes), am_pm, nanoid ])
+                return result
+            }
         }
     })
 

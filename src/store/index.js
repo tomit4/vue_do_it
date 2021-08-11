@@ -6,8 +6,6 @@ const store = createStore({
     // think of state as being like the data() method in a standard vue component, it holds onto key/value pairs that can be referenced throughout your application
     state: {
         tasks: [],
-        // amTasks: [],
-        // pmTasks: [],
         listIsShown: true // used to toggle the view of the MyList Link, we CANNOT allow the user to click on the MyList Link TWICE as it will clear the state.tasks array with the clearMyList() function in App.vue, thusly when we display our list, we hide the MyList Link when viewing the Header.vue file
     },
     // mutations  should contain methods that manipulate the state() objects synchornously
@@ -23,30 +21,30 @@ const store = createStore({
                 taskObj.am_pm = payload[i].am_pm
                 taskObj.nanoid = payload[i].nanoid
 
-                // if (taskObj.am_pm === "AM") {
-                //     state.amTasks.push(taskObj)
-                // }
-                
-                // if (taskObj.am_pm === "PM") {
-                //     state.pmTasks.push(taskObj)
-                // }
+                if (taskObj.am_pm === "PM") {
+                    taskObj.hours = Number(taskObj.hours - 12)
+                }
 
+                if (taskObj.am_pm === "AM" && taskObj.hours === 0) {
+                    taskObj.hours = 12
+                }
+
+                if (taskObj.am_pm === "PM" && taskObj.hours === 0) {
+                    taskObj.hours = 12
+                }
+
+                taskObj.hours = String(taskObj.hours)
+                taskObj.minutes = String(taskObj.minutes)
+                if (taskObj.hours.length < 2) {
+                    taskObj.hours = "0" + taskObj.hours
+                }
+                if (taskObj.minutes.length < 2) {
+                    taskObj.minutes = "0" + taskObj.minutes
+                }
                 state.tasks.push(taskObj)
             }
 
-// We can sort our list this way, but it is inefficient, especially when dealing with the number 12, we may 
-// wish to actually deal in military time and create two SQL tables on the backend for AM and PM, then join 
-// them and return them here, the hours can then be changed if they are in the PM table, this will require a 
-// bit of work however, as we will need to adjust our app.js SQL queries and our axios api calls to implement 
-// this feature
-
-            // state.amTasks.sort(({ minutes: a }, { minutes: b }) => a - b)
-            // state.amTasks.sort (({ hours: a }, { hours: b }) => a - b)
-
-            // state.pmTasks.sort(({ minutes: a }, { minutes: b }) => a - b)
-            // state.pmTasks.sort (({ hours: a }, { hours: b }) => a - b)
-
-            // state.tasks = state.amTasks.concat(state.pmTasks)
+// We can sort our list this way, but it is inefficient, especially when dealing with the number 12 (we saw this with our original CLI todo list app), we may wish to actually deal in military time and create two SQL tables on the backend for AM and PM, then join them and return them here, the hours can then be changed if they are in the PM table back to civilian time, this will require a bit of work however, as we will need to adjust our app.js SQL queries and our axios api calls to implement this feature
 
             return state // now the state is reset to the returned data from fetchToDos
         },
@@ -115,11 +113,11 @@ const store = createStore({
             try{
                 context
                 const response = await axios.put('http://localhost:3000/maria_database', 
-                {"updated_todo": payload[0].todo, 
-                "hours": payload[0].hours, 
-                "minutes": payload[0].minutes, 
-                "am_pm": payload[0].am_pm, 
-                "nanoid": payload[0].nanoid })
+                {"updated_todo": payload.todo, 
+                "hours": payload.hours, 
+                "minutes": payload.minutes, 
+                "am_pm": payload.am_pm, 
+                "nanoid": payload.nanoid })
                 response
             }
             catch(err) {console.log(err)}

@@ -16,31 +16,59 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `to_do`
+-- Table structure for table `to_do_am`
 --
 
-DROP TABLE IF EXISTS `to_do`;
+DROP TABLE IF EXISTS `to_do_am`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `to_do` (
+CREATE TABLE `to_do_am` (
   `id` bigint(20) unsigned NOT NULL DEFAULT uuid_short(),
   `task` varchar(28) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `hours` varchar(2) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `minutes` varchar(2) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `am_pm` varchar(2) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `hours` int(11) NOT NULL,
+  `minutes` int(11) NOT NULL,
+  `am_pm` varchar(2) COLLATE utf8mb4_unicode_ci NOT NULL,
   `nanoid` varchar(21) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `to_do`
+-- Dumping data for table `to_do_am`
 --
 
-LOCK TABLES `to_do` WRITE;
-/*!40000 ALTER TABLE `to_do` DISABLE KEYS */;
-INSERT INTO `to_do` VALUES (99380578331131906,'YOU DOING IT NOW!','12','58','PM','w9d6kl_7qX_3-I0CzSOby'),(99380578331131907,'YOU DONE DOING IT YET!?','05','30','AM','C2n2WHiF-zqnpzBYMympU'),(99380578331131908,'DANG YOU SLOW AT THIS','04','28','PM','WLz-I__ZEK3NKNjFJFZ6_');
-/*!40000 ALTER TABLE `to_do` ENABLE KEYS */;
+LOCK TABLES `to_do_am` WRITE;
+/*!40000 ALTER TABLE `to_do_am` DISABLE KEYS */;
+INSERT INTO `to_do_am` VALUES (99381936597762081,'EARLY STUFF',4,1,'AM','0HFEIgEKp3YyV2cVGTHQh'),(99381936597762084,'MIDNIGHT HOUR',0,1,'AM','F8HDn0np_pi_WRtUeHThn');
+/*!40000 ALTER TABLE `to_do_am` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `to_do_pm`
+--
+
+DROP TABLE IF EXISTS `to_do_pm`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `to_do_pm` (
+  `id` bigint(20) unsigned NOT NULL DEFAULT uuid_short(),
+  `task` varchar(28) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `hours` int(11) NOT NULL,
+  `minutes` int(11) NOT NULL,
+  `am_pm` varchar(2) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nanoid` varchar(21) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `to_do_pm`
+--
+
+LOCK TABLES `to_do_pm` WRITE;
+/*!40000 ALTER TABLE `to_do_pm` DISABLE KEYS */;
+INSERT INTO `to_do_pm` VALUES (99381936597762082,'LATE STUFF ',23,54,'PM','ndM4nDXHFJZVSHDMiQarJ'),(99381936597762083,'HIGH NOON',12,1,'PM','SE19Tc62-jJmhVTo3IM7C');
+/*!40000 ALTER TABLE `to_do_pm` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -52,4 +80,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-08-09 23:56:19
+-- Dump completed on 2021-08-11  2:40:14
