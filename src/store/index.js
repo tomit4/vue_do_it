@@ -6,7 +6,9 @@ const store = createStore({
     // think of state as being like the data() method in a standard vue component, it holds onto key/value pairs that can be referenced throughout your application
     state: {
         tasks: [],
-        listIsShown: true // used to toggle the view of the MyList Link, we CANNOT allow the user to click on the MyList Link TWICE as it will clear the state.tasks array with the clearMyList() function in App.vue, thusly when we display our list, we hide the MyList Link when viewing the Header.vue file
+        listIsShown: true,
+        currentHour: undefined,
+        currentAMPM: undefined // used to toggle the view of the MyList Link, we CANNOT allow the user to click on the MyList Link TWICE as it will clear the state.tasks array with the clearMyList() function in App.vue, thusly when we display our list, we hide the MyList Link when viewing the Header.vue file
     },
     // mutations  should contain methods that manipulate the state() objects synchornously
     mutations: {
@@ -20,6 +22,7 @@ const store = createStore({
                 taskObj.minutes = payload[i].minutes
                 taskObj.am_pm = payload[i].am_pm
                 taskObj.nanoid = payload[i].nanoid
+                taskObj.currentStatus = false
 
                 if (taskObj.am_pm === "PM") {
                     taskObj.hours = Number(taskObj.hours - 12)
@@ -41,6 +44,26 @@ const store = createStore({
                 if (taskObj.minutes.length < 2) {
                     taskObj.minutes = "0" + taskObj.minutes
                 }
+                
+                let time = new Date()
+                time.setHours(time.getHours()-7)
+                let hour = time.getHours()
+                let am_pm = "AM"
+                if (hour > 12) {
+                    hour -= 12
+                    am_pm = "PM"
+                }
+                if (hour == 0) {
+                    hour = 12
+                    am_pm = "PM"
+                }
+                hour = hour < 10 ? "0" + hour : hour
+                state.currentHour = hour
+                state.currentAMPM = am_pm
+                if (taskObj.hours === state.currentHour && taskObj.am_pm === state.currentAMPM) {
+                    taskObj.currentStatus = true
+                }
+
                 state.tasks.push(taskObj)
             }
 
@@ -80,6 +103,7 @@ const store = createStore({
             try {
                 const response = await axios.get('http://localhost:3000/maria_database')
                 context.commit('showTodos', response.data)
+                // context.commit('getTime')
             }
             catch(err) {console.log(err)}
         },

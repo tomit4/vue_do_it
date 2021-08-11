@@ -5,18 +5,19 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
+
   data() {
     return {
-      time: "00:00:00AM"
+      time: "00:00:00AM",
     }
   },
   methods: {
     showTime() {
       let time = new Date()
-      time.setHours(22)
+      time.setHours(time.getHours()-7)
       let hour = time.getHours()
-      // console.log(hour)
       let min = time.getMinutes()
       let sec = time.getSeconds()
       let am_pm = "AM"
@@ -38,12 +39,16 @@ export default {
       let currentTime = hour + ":" + min + ":" + sec + am_pm
 
       this.time = currentTime
+      this.hour = hour
+      this.ampm = am_pm
     },
   },
   mounted() {
-    setInterval(this.showTime, 1000)    
+    setInterval(this.showTime, 1000)
+  },
+  computed: {
+      ...mapState(["tasks"]),
   }
-
 }
 </script>
 
