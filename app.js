@@ -1,7 +1,6 @@
 'use strict'
 
 const Hapi = require("@hapi/hapi")
-// const { nanoid } = require("nanoid")
 const pool = require('./maria_database_connection/database.js')
 
 const init = async() => {
@@ -13,20 +12,12 @@ const init = async() => {
             cors: true
         }
     })
-
-    // server.route({
-    //     method: 'GET',
-    //     path: '/',
-    //     handler: async() => {
-    //         return nanoid()
-    //     }               
-    // })
     
     server.route({
         method: 'GET',
         path: '/maria_database',
         handler: async() => {
-            const sqlQuery = 'SELECT * FROM to_do_am UNION ALL SELECT * FROM to_do_pm ORDER BY hours ASC'
+            const sqlQuery = 'SELECT * FROM to_do_am UNION ALL SELECT * FROM to_do_pm ORDER BY hours, minutes'
             const result = await pool.query(sqlQuery)
             return result
         }               
