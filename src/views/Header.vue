@@ -29,7 +29,7 @@
     <ul>  
       <li class="tooltip" v-for="(tasks, id) in tasks" :key="tasks" :id="tasks.currentStatus ? 'right_now' : 'not_now'">
       <div>
-        <span class="li_items">
+        <span>
           {{ tasks.todo + " AT " + tasks.hours + ":" + tasks.minutes + tasks.am_pm }}
         </span>
       <span @click="editTask(id, tasks)" class="tooltiptext" :id="'edit_btn'+id">

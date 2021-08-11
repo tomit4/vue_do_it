@@ -6,9 +6,7 @@ const store = createStore({
     // think of state as being like the data() method in a standard vue component, it holds onto key/value pairs that can be referenced throughout your application
     state: {
         tasks: [],
-        listIsShown: true,
-        currentHour: undefined,
-        currentAMPM: undefined // used to toggle the view of the MyList Link, we CANNOT allow the user to click on the MyList Link TWICE as it will clear the state.tasks array with the clearMyList() function in App.vue, thusly when we display our list, we hide the MyList Link when viewing the Header.vue file
+        listIsShown: true, // used to toggle the view of the MyList Link, we CANNOT allow the user to click on the MyList Link TWICE as it will clear the state.tasks array with the clearMyList() function in App.vue, thusly when we display our list, we hide the MyList Link when viewing the Header.vue file
     },
     // mutations  should contain methods that manipulate the state() objects synchornously
     mutations: {
@@ -58,9 +56,8 @@ const store = createStore({
                     am_pm = "PM"
                 }
                 hour = hour < 10 ? "0" + hour : hour
-                state.currentHour = hour
-                state.currentAMPM = am_pm
-                if (taskObj.hours === state.currentHour && taskObj.am_pm === state.currentAMPM) {
+
+                if (taskObj.hours === hour && taskObj.am_pm === am_pm) {
                     taskObj.currentStatus = true
                 }
 
