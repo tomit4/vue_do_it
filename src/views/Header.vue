@@ -1,7 +1,8 @@
 <template>
   <div class="container">
-    <span class="fixed">
 
+    <span class="fixed">
+    <router-link @click="reRenderMyListLink" id="my_list_btn" to="/">HOME</router-link>
     <form v-if="!editButtonClicked" @submit="onSubmit">
       <input id="initial_form" type="text" v-model="newTask" placeholder="THERE IS NO TRY..." maxlength="28">
     </form>
@@ -27,8 +28,9 @@
     <button v-if="editButtonClicked" @click="updateTask" class="edit_btn">EDIT</button>
     <input v-if="!editButtonClicked" @click="onSubmit" type="submit" value="SUBMIT">
     <br>
-    
+      <div class="bar"></div>
     </span>
+
     <ul>  
       <li class="tooltip" v-for="(tasks, id) in tasks" :key="tasks" :id="id" :name="tasks.currentStatus ? 'right_now' : 'not_now'">
       <div>
@@ -42,9 +44,7 @@
       <button @click="onClick(id, tasks)" class="btn" :id="tasks.currentStatus ? 'right_now' : 'not_now'">DONE</button>
       </li>
     </ul>
-    <div class="homelink">
-    <router-link @click="reRenderMyListLink" id="my_list_btn" to="/">HOME</router-link>
-    </div>
+
   </div>
 </template>
 
@@ -225,15 +225,27 @@ export default {
 }
 
 .fixed {
-  margin-top: 280px;
+  margin-top: 250px;
   position: fixed;
   background-color: white;
 }
+
+.bar {
+  background-color: #41b883;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  margin: 0 3em 0em 3em;
+  padding: 0.3em;
+  border: 5px white solid;
+  border-radius: 0.2em;
+}
+
 form {
   display: flex;
   align-content: center;
   justify-content: center;
-  margin: -10px 0 0 0;
+  margin: -13px 0 0 0;
   padding: 0 0 -20px 0;
 }
 
@@ -356,7 +368,7 @@ input::-webkit-inner-spin-button {
   display:flex;
   align-content: center;
   justify-content: center;
-  margin: -1.82rem 0rem 0 -0.45rem;
+  margin: -1.65rem 0rem 0 -0.45rem;
   padding: 1px;
   background: #41b883;
   border: #41b883 solid;
@@ -385,7 +397,7 @@ input::-webkit-inner-spin-button {
   align-content: center;
   justify-content: center;
   text-align:left;
-  margin: -2.85rem 0 0 10rem;
+  margin: -2.45rem 0 0 10rem;
   padding: 0px;
   background: #41b883;
   border: #41b883 solid;
@@ -406,7 +418,7 @@ ul {
   text-align: left;
   text-indent: -3em;
   list-style-type: none; /*Remove bullets*/
-  padding: 0; /* Remove padding */
+  padding: 1em; /* Remove padding */
   margin: 150px 625px 0 50px;
 }
 
@@ -549,16 +561,6 @@ li[name="right_now"] {
  border-width: 10px;
  border-style: solid;
  border-color: transparent #206557ff transparent transparent;
-}
-
-.homelink {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  margin: 0 0 0px 0px;
-  padding: 0 0 10px 0;
-  background-color: white;
-
 }
 
 </style>
