@@ -1,5 +1,7 @@
 <template>
-  <div>
+  <div class="container">
+    <span class="fixed">
+
     <form v-if="!editButtonClicked" @submit="onSubmit">
       <input id="initial_form" type="text" v-model="newTask" placeholder="THERE IS NO TRY..." maxlength="28">
     </form>
@@ -26,6 +28,7 @@
     <input v-if="!editButtonClicked" @click="onSubmit" type="submit" value="SUBMIT">
     <br>
     
+    </span>
     <ul>  
       <li class="tooltip" v-for="(tasks, id) in tasks" :key="tasks" :id="id" :name="tasks.currentStatus ? 'right_now' : 'not_now'">
       <div>
@@ -39,8 +42,9 @@
       <button @click="onClick(id, tasks)" class="btn" :id="tasks.currentStatus ? 'right_now' : 'not_now'">DONE</button>
       </li>
     </ul>
-
+    <div class="homelink">
     <router-link @click="reRenderMyListLink" id="my_list_btn" to="/">HOME</router-link>
+    </div>
   </div>
 </template>
 
@@ -216,6 +220,15 @@ export default {
 
 <style scoped>
 
+.container {
+  margin-top: 280px;
+}
+
+.fixed {
+  margin-top: 280px;
+  position: fixed;
+  background-color: white;
+}
 form {
   display: flex;
   align-content: center;
@@ -394,8 +407,9 @@ ul {
   text-indent: -3em;
   list-style-type: none; /*Remove bullets*/
   padding: 0; /* Remove padding */
-  margin: -7px 625px 0 50px;
+  margin: 150px 625px 0 50px;
 }
+
 
 li {
   display: block;
@@ -535,6 +549,16 @@ li[name="right_now"] {
  border-width: 10px;
  border-style: solid;
  border-color: transparent #206557ff transparent transparent;
+}
+
+.homelink {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  margin: 0 0 0px 0px;
+  padding: 0 0 10px 0;
+  background-color: white;
+
 }
 
 </style>
