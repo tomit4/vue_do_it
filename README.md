@@ -1,4 +1,4 @@
-![screen-gif](./public/vue_do_it.gif)
+![screen-gif](./public/vue_do_it_2.gif)
 
 _This is a Learning Project, if you choose to download it, some parts may not work yet or may outright break, but please feel free to clone this repository if you're curious/interested. Thanks for taking a look!._
 
