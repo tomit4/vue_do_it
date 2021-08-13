@@ -7,7 +7,9 @@ _This is a Learning Project, if you choose to download it, some parts may not wo
 </header>
 <body>
 
-<p style=color:#206557ff>A simple CRUD To Do List application that utilizes VueJS, HapiJS, NodeJS, and MariaDB.  Other packages utilized in this application include Vue-Router, and VueX, Nodemon, and NanoID.</p>
+<p style=color:#206557ff>A simple CRUD To Do List application that utilizes VueJS, HapiJS, NodeJS, and MariaDB.  Other packages utilized in this application include Vue-Router, and VueX, Nodemon, and NanoID.
+
+This basic To Do Application saves your Todo List to a MariaDB SQL database, retrieves it from that database, can update and delete items from that database. In addition to that, it will sort your to do list by time and highlight the tasks to be done at the current hour.</p>
 
 <p style=color:#206557ff>In order to utilize the application as it is now, you will need to install a few simple tools and have an instance of MariaDB installed.  The following instructions are specific to the development environment that was used to create this project.  Although you can find plenty of documentation on how to install the specific tools you'll need to use this app on any machine, the following notes/instructions will be specific to Manjaro Linux, as that is the environment I use.  Thusly any Arch based distribution can follow along easily, but any tech-savy person with a knowledge of Git, Node, and MySQL should be able to get this running on any machine.</p>
 
