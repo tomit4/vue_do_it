@@ -2,6 +2,7 @@
 
 _This is a Learning Project, if you choose to download it, some parts may not work yet or may outright break, but please feel free to clone this repository if you're curious/interested. Thanks for taking a look!._
 
+<p>Just a test</p>
 <header>
 <h4 style=color:#206557ff>My First Vue Application</h4>
 </header>
