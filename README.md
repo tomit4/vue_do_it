@@ -111,3 +111,11 @@ Installing MariaDB has multiple steps and is not as simple as inputting a single
 <font size="2">
 
 _Please note that this project was written by a beginner, it is my best attempt at creating a simple To Do List Application using the tools mentioned above. This project will hopefully be updated in the near future to add more features and clean up the code._
+
+UPDATE: After having looked at this project a few years later, it's apparent that some updates have broken some dependencies, but the fix is relatively straight forward. Simply roll back your use of node on this project to the latest stable version:
+
+nvm install --lts
+
+You'll need nvm to do so, if you don't have it yet installed, please follow these instructions:
+
+<a style=color:#00ae8cff href="https://letscodepare.com/blog/how-to-install-nvm-node-version-manager-on-linux"> Install Node Version Manager on Linux</a>
